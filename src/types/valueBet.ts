@@ -21,3 +21,12 @@ export type ValueBetParams = {
   date: string;
   league?: string;
 };
+
+export type ValueBetsScanResponse = {
+  date: string;
+  opportunities: ValueBetOpportunity[];
+  matchesConsidered: number;
+  matchesWithEnrichedStats: number;
+  statsIncomplete: boolean;
+  hint: string | null;
+};

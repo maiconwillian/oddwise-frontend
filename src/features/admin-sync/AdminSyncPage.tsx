@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { RefreshCw, Calendar, CalendarRange } from 'lucide-react';
+import { RefreshCw, Calendar, CalendarRange, Brain } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { MetricCard } from '@/components/badges/MetricCard';
@@ -15,12 +15,14 @@ import { adminService } from '@/services/adminService';
 import { formatDateTimeBR, toISODate } from '@/utils/dates';
 import { getApiErrorMessage } from '@/utils/formatters';
 import type { SyncResult } from '@/types/admin';
+import type { EnrichResult } from '@/types/matchAnalysis';
 
 export function AdminSyncPage() {
   const [syncDate, setSyncDate] = useState(toISODate(new Date()));
   const [rangeFrom, setRangeFrom] = useState(toISODate(new Date()));
   const [rangeTo, setRangeTo] = useState(toISODate(new Date()));
   const [lastResult, setLastResult] = useState<SyncResult | null>(null);
+  const [lastEnrichResult, setLastEnrichResult] = useState<EnrichResult | null>(null);
   const queryClient = useQueryClient();
 
   const statusQuery = useQuery({
@@ -38,11 +40,31 @@ export function AdminSyncPage() {
     onError: (error) => toast.error(getApiErrorMessage(error)),
   });
 
+  const enrichMutation = useMutation({
+    mutationFn: () => adminService.enrichFixtures(syncDate),
+    onSuccess: (data) => {
+      setLastEnrichResult(data);
+      toast.success(data.message ?? 'Enriquecimento concluído');
+      invalidateOperationalQueries(queryClient);
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error)),
+  });
+
   const syncRangeMutation = useMutation({
     mutationFn: () => adminService.syncFixturesRange(rangeFrom, rangeTo),
     onSuccess: (data) => {
       setLastResult(data);
       toast.success(data.message ?? 'Sincronização concluída');
+      invalidateOperationalQueries(queryClient);
+    },
+    onError: (error) => toast.error(getApiErrorMessage(error)),
+  });
+
+  const enrichRangeMutation = useMutation({
+    mutationFn: () => adminService.enrichFixturesRange(rangeFrom, rangeTo),
+    onSuccess: (data) => {
+      setLastEnrichResult(data);
+      toast.success(data.message ?? 'Enriquecimento concluído');
       invalidateOperationalQueries(queryClient);
     },
     onError: (error) => toast.error(getApiErrorMessage(error)),
@@ -93,12 +115,25 @@ export function AdminSyncPage() {
                 onChange={(e) => setSyncDate(e.target.value)}
               />
             </div>
-            <Button
-              onClick={() => syncDateMutation.mutate()}
-              disabled={syncDateMutation.isPending}
-            >
-              {syncDateMutation.isPending ? 'Sincronizando...' : 'Sincronizar'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => syncDateMutation.mutate()}
+                disabled={syncDateMutation.isPending}
+              >
+                {syncDateMutation.isPending ? 'Sincronizando...' : 'Sincronizar'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => enrichMutation.mutate()}
+                disabled={enrichMutation.isPending}
+              >
+                <Brain className={`mr-2 h-4 w-4 ${enrichMutation.isPending ? 'animate-pulse' : ''}`} />
+                {enrichMutation.isPending ? 'Enriquecendo...' : 'Enriquecer análise desta data'}
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Após o sync, enriqueça para preencher médias/forma (API-Football). Consome quota da API.
+            </p>
           </CardContent>
         </Card>
 
@@ -132,15 +167,54 @@ export function AdminSyncPage() {
                 />
               </div>
             </div>
-            <Button
-              onClick={() => syncRangeMutation.mutate()}
-              disabled={syncRangeMutation.isPending}
-            >
-              {syncRangeMutation.isPending ? 'Sincronizando...' : 'Sincronizar intervalo'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={() => syncRangeMutation.mutate()}
+                disabled={syncRangeMutation.isPending}
+              >
+                {syncRangeMutation.isPending ? 'Sincronizando...' : 'Sincronizar intervalo'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => enrichRangeMutation.mutate()}
+                disabled={enrichRangeMutation.isPending}
+              >
+                <Brain
+                  className={`mr-2 h-4 w-4 ${enrichRangeMutation.isPending ? 'animate-pulse' : ''}`}
+                />
+                {enrichRangeMutation.isPending ? 'Enriquecendo...' : 'Enriquecer intervalo'}
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
+
+      {lastEnrichResult && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Resultado do enriquecimento</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div>
+              <p className="text-muted-foreground">Processadas</p>
+              <p className="font-bold">{lastEnrichResult.matchesProcessed}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Enriquecidas</p>
+              <p className="font-bold text-emerald-400">{lastEnrichResult.enriched}</p>
+            </div>
+            <div>
+              <p className="text-muted-foreground">Falhas</p>
+              <p className="font-bold text-amber-400">{lastEnrichResult.failed}</p>
+            </div>
+            {lastEnrichResult.message && (
+              <div className="col-span-2 sm:col-span-4">
+                <p className="text-muted-foreground">{lastEnrichResult.message}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {lastResult && (
         <Card>
@@ -166,6 +240,14 @@ export function AdminSyncPage() {
               <div>
                 <p className="text-muted-foreground">Atualizadas</p>
                 <p className="font-bold">{lastResult.updated ?? 0}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Ignoradas (liga)</p>
+                <p className="font-bold text-amber-400">{lastResult.skippedUnsupported ?? 0}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Ignoradas (qualidade)</p>
+                <p className="font-bold text-amber-400">{lastResult.skippedQuality ?? 0}</p>
               </div>
               {(lastResult.settled ?? 0) > 0 && (
                 <>

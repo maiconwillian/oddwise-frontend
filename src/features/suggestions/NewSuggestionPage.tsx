@@ -15,6 +15,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { matchService } from '@/services/matchService';
 import { oddsService } from '@/services/oddsService';
 import { suggestionService } from '@/services/suggestionService';
+import { valueBetService } from '@/services/valueBetService';
 import { DEFAULT_MARKET, LEAGUES, SUPPORTED_MARKETS, type League } from '@/types/api';
 import { formatDateTimeBR } from '@/utils/dates';
 import { getApiErrorMessage, formatMarket } from '@/utils/formatters';
@@ -83,6 +84,13 @@ export function NewSuggestionPage() {
     enabled: !!selectedMatchId,
   });
 
+  const valueBetQuery = useQuery({
+    queryKey: ['value-bet-match', selectedMatchId],
+    queryFn: () => valueBetService.getValueBetForMatch(selectedMatchId),
+    enabled: !!selectedMatchId,
+    retry: false,
+  });
+
   const marketOdds = sortOddsByValue(
     latestOddPerBookmaker(filterOddsByMarket(oddsQuery.data ?? [], selectedMarket)),
   );
@@ -120,6 +128,16 @@ export function NewSuggestionPage() {
     }
     setValue('matchId', match.id);
   }, [preselectQuery.data, setValue]);
+
+  useEffect(() => {
+    const vb = valueBetQuery.data;
+    if (!vb) return;
+    setValue('confidence', vb.confidence, { shouldValidate: true });
+    setValue('expectedValue', vb.expectedValue * 100, { shouldValidate: true });
+    if (vb.suggestedStake > 0) {
+      setValue('stake', vb.suggestedStake, { shouldValidate: true });
+    }
+  }, [valueBetQuery.data, setValue]);
 
   const mutation = useMutation({
     mutationFn: suggestionService.createSuggestion,
@@ -297,6 +315,14 @@ export function NewSuggestionPage() {
                   </p>
                 )}
               </div>
+            )}
+
+            {valueBetQuery.data && (
+              <p className="rounded-md border border-emerald-500/30 bg-emerald-500/5 px-3 py-2 text-xs text-emerald-200">
+                Pré-preenchido do motor EV+ ({valueBetQuery.data.strategyName}): confiança{' '}
+                {valueBetQuery.data.confidence.toFixed(0)}%, EV{' '}
+                {(valueBetQuery.data.expectedValue * 100).toFixed(1)}%.
+              </p>
             )}
 
             <div className="grid gap-4 sm:grid-cols-3">

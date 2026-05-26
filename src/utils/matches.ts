@@ -35,6 +35,14 @@ export function isSuggestableMatch(match: Match): boolean {
   return (SUGGESTABLE_MATCH_STATUSES as readonly string[]).includes(match.status);
 }
 
+/** Mesma regra da sugestão: pré-jogo ou ao vivo (não FT/CANC/etc.). */
+export function canCaptureOdds(match: Pick<Match, 'status'>): boolean {
+  return (SUGGESTABLE_MATCH_STATUSES as readonly string[]).includes(match.status);
+}
+
+export const ODDS_CAPTURE_DISABLED_TOOLTIP =
+  'Só é possível capturar odds de jogos não finalizados (pré-jogo ou ao vivo).';
+
 export function leagueFromMatch(match: Pick<Match, 'leagueName' | 'leagueCountry'>): League | undefined {
   return leagueFromApiNameAndCountry(match.leagueName, match.leagueCountry);
 }

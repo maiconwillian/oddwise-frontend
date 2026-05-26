@@ -89,7 +89,7 @@ src/
 | `/matches/:id` | Detalhe da partida |
 | `/suggestions` | Sugestões |
 | `/suggestions/new` | Nova sugestão |
-| `/value-bets` | Oportunidades EV+ (Phase 1.5c) |
+| `/value-bets` | Oportunidades EV+ + análise da rodada (Sprint 11) |
 | `/odds` | Odds e CLV |
 | `/backtesting` | Simulação histórica |
 | `/reports` | Relatórios de performance |

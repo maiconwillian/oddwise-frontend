@@ -22,6 +22,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
+    test: {
+      globals: false,
+    },
     preview: {
       port: 5173,
       proxy: {

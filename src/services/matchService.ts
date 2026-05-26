@@ -1,5 +1,6 @@
 import { api } from './api';
 import type { League, SpringPage } from '@/types/api';
+import type { EnrichResult, MatchAnalysis } from '@/types/matchAnalysis';
 import type { Match, MatchParams, MatchPayload } from '@/types/match';
 
 export const matchService = {
@@ -29,5 +30,13 @@ export const matchService = {
 
   deleteMatch(id: string) {
     return api.delete(`/api/matches/${id}`).then((r) => r.data);
+  },
+
+  getMatchAnalysis(id: string) {
+    return api.get<MatchAnalysis>(`/api/matches/${id}/analysis`).then((r) => r.data);
+  },
+
+  enrichMatch(id: string) {
+    return api.post<EnrichResult>(`/api/matches/${id}/enrich`).then((r) => r.data);
   },
 };

@@ -8,6 +8,8 @@ export type SyncResult = {
   created?: number;
   updated?: number;
   skipped?: number;
+  skippedUnsupported?: number;
+  skippedQuality?: number;
   skippedSettlement?: number;
   settled?: number;
   won?: number;

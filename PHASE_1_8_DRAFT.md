@@ -1,13 +1,20 @@
 # Phase 1.8 — Automação de sugestões (rascunho)
 
-**Status:** planejado · Sprint 10  
-**Pré-requisitos:** Phase 1.5c ✅ · validação backtest 1.7 com amostra ≥ 30 apostas por liga
+**Status:** planejado · Sprint 10+  
+**Backend:** [../backend/PHASE_1_8_DRAFT.md](../backend/PHASE_1_8_DRAFT.md)  
+**Visão agente:** [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md)
 
-Ver também: `../sports-bet-analyzer/PHASE_1_8_DRAFT.md` no monorepo local.
+## Pré-requisitos
+
+- Phase 1.5c ✅ · backtest 1.7 com amostra OK onde for operar
+- **Phase 1.75** (stats reais) ✅ — Sprint 10; ver [SPRINT_10.md](SPRINT_10.md)
+- **Phase 1.77** (pick ranking) ⬜
+
+**Não implementar fila de propostas antes de 1.75 + 1.77.**
 
 ## Meta
 
-3–5 sugestões/semana com revisão humana antes de virar aposta operacional.
+3–5 sugestões/semana · revisão humana · accept/reject na UI.
 
 ## Endpoints planejados (backend)
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { RefreshCw, Search } from 'lucide-react';
@@ -8,26 +8,45 @@ import { OddsHistoryChart } from '@/components/charts/PerformanceChart';
 import { ErrorState } from '@/components/states/ErrorState';
 import { TableSkeleton } from '@/components/states/LoadingSkeleton';
 import { Button } from '@/components/ui/button';
+import { DateInput } from '@/components/ui/date-input';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select } from '@/components/ui/select';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { matchService } from '@/services/matchService';
 import { oddsService } from '@/services/oddsService';
-import { formatDateTimeBR } from '@/utils/dates';
+import { formatDateTimeBR, toISODate } from '@/utils/dates';
 import { formatOdd } from '@/utils/numbers';
 import { getApiErrorMessage } from '@/utils/formatters';
+import {
+  canCaptureOdds,
+  filterSuggestableMatches,
+  filterSupportedLeagueMatches,
+  ODDS_CAPTURE_DISABLED_TOOLTIP,
+  sortMatchesByDate,
+} from '@/utils/matches';
 
 export function OddsPage() {
+  const [date, setDate] = useState(toISODate(new Date()));
   const [matchId, setMatchId] = useState('');
   const [bookmaker, setBookmaker] = useState('');
   const [pickedOddId, setPickedOddId] = useState('');
   const [finalOddId, setFinalOddId] = useState('');
 
   const matchesQuery = useQuery({
-    queryKey: ['matches', 'odds-select'],
-    queryFn: () => matchService.getMatches({ page: 0, size: 100 }),
+    queryKey: ['matches', 'odds-select', date],
+    queryFn: () => matchService.getMatchesByDate(date),
+    select: (data) =>
+      sortMatchesByDate(
+        filterSuggestableMatches(filterSupportedLeagueMatches(data)),
+      ),
   });
+
+  useEffect(() => {
+    setMatchId('');
+    setPickedOddId('');
+    setFinalOddId('');
+  }, [date]);
 
   const oddsQuery = useQuery({
     queryKey: ['odds-match', matchId],
@@ -68,6 +87,9 @@ export function OddsPage() {
   });
 
   const oddsList = oddsQuery.data ?? [];
+  const capturableMatches = matchesQuery.data ?? [];
+  const selectedMatch = capturableMatches.find((m) => m.id === matchId);
+  const oddsCaptureAllowed = selectedMatch ? canCaptureOdds(selectedMatch) : false;
 
   return (
     <div className="space-y-6">
@@ -83,24 +105,63 @@ export function OddsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <Label>Partida</Label>
-              <Select value={matchId} onChange={(e) => setMatchId(e.target.value)}>
-                <option value="">Selecione</option>
-                {matchesQuery.data?.content.map((m) => (
+              <Label htmlFor="odds-date" className="cursor-pointer">
+                Data
+              </Label>
+              <DateInput
+                id="odds-date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="odds-match">Partida</Label>
+              <Select
+                id="odds-match"
+                value={matchId}
+                onChange={(e) => setMatchId(e.target.value)}
+                disabled={matchesQuery.isLoading}
+              >
+                <option value="">
+                  {matchesQuery.isLoading
+                    ? 'Carregando partidas...'
+                    : capturableMatches.length === 0
+                      ? 'Nenhuma partida elegível nesta data'
+                      : 'Selecione'}
+                </option>
+                {capturableMatches.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {m.homeTeamName} vs {m.awayTeamName} — {m.leagueName}
+                    {m.homeTeamName} vs {m.awayTeamName} — {formatDateTimeBR(m.matchDate)} (
+                    {m.status}) · {m.leagueName}
                   </option>
                 ))}
               </Select>
+              {matchesQuery.isError && (
+                <ErrorState error={matchesQuery.error} onRetry={() => matchesQuery.refetch()} />
+              )}
+              {!matchesQuery.isLoading &&
+                !matchesQuery.isError &&
+                capturableMatches.length === 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Sincronize a data em Admin, ou escolha outro dia. Só aparecem jogos não
+                    finalizados (pré-jogo ou ao vivo) das 6 ligas.
+                  </p>
+                )}
             </div>
             {matchId && (
-              <Button
-                onClick={() => captureMutation.mutate()}
-                disabled={captureMutation.isPending}
-              >
-                <RefreshCw className={`mr-2 h-4 w-4 ${captureMutation.isPending ? 'animate-spin' : ''}`} />
-                Capturar odds
-              </Button>
+              <div className="space-y-2">
+                <Button
+                  onClick={() => captureMutation.mutate()}
+                  disabled={captureMutation.isPending || !oddsCaptureAllowed}
+                  title={oddsCaptureAllowed ? undefined : ODDS_CAPTURE_DISABLED_TOOLTIP}
+                >
+                  <RefreshCw className={`mr-2 h-4 w-4 ${captureMutation.isPending ? 'animate-spin' : ''}`} />
+                  Capturar odds
+                </Button>
+                {selectedMatch && !oddsCaptureAllowed && (
+                  <p className="text-xs text-muted-foreground">{ODDS_CAPTURE_DISABLED_TOOLTIP}</p>
+                )}
+              </div>
             )}
           </CardContent>
         </Card>

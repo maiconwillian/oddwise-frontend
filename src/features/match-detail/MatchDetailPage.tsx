@@ -16,7 +16,9 @@ import { oddsService } from '@/services/oddsService';
 import { suggestionService } from '@/services/suggestionService';
 import { formatDateTimeBR } from '@/utils/dates';
 import { formatCurrency, formatOdd } from '@/utils/numbers';
+import { MatchAnalysisCard } from '@/features/match-detail/MatchAnalysisCard';
 import { getApiErrorMessage, formatMarket } from '@/utils/formatters';
+import { canCaptureOdds, ODDS_CAPTURE_DISABLED_TOOLTIP } from '@/utils/matches';
 
 export function MatchDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -67,6 +69,7 @@ export function MatchDetailPage() {
 
   const match = matchQuery.data!;
   const oddsList = oddsQuery.data ?? [];
+  const oddsCaptureAllowed = canCaptureOdds(match);
 
   return (
     <div className="space-y-6">
@@ -76,7 +79,8 @@ export function MatchDetailPage() {
         actions={
           <Button
             onClick={() => captureMutation.mutate()}
-            disabled={captureMutation.isPending}
+            disabled={captureMutation.isPending || !oddsCaptureAllowed}
+            title={oddsCaptureAllowed ? undefined : ODDS_CAPTURE_DISABLED_TOOLTIP}
           >
             <RefreshCw className={`mr-2 h-4 w-4 ${captureMutation.isPending ? 'animate-spin' : ''}`} />
             Capturar odds
@@ -118,6 +122,12 @@ export function MatchDetailPage() {
           </CardContent>
         </Card>
       </div>
+
+      <MatchAnalysisCard
+        matchId={match.id}
+        homeTeamName={match.homeTeamName}
+        awayTeamName={match.awayTeamName}
+      />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>

@@ -15,6 +15,9 @@ export function invalidateOperationalQueries(queryClient: QueryClient) {
     'reports-daily',
     'reports-monthly',
     'value-bets',
+    'match-insights',
+    'match-analysis',
+    'value-bet-match',
   ] as const;
 
   for (const key of keys) {
