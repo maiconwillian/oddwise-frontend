@@ -44,4 +44,6 @@ export type BacktestResult = {
   averageCLV: number;
   profitFactor: number;
   bets: BacktestBetResult[];
+  lowSample?: boolean;
+  minSampleBets?: number;
 };

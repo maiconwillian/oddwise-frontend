@@ -1,5 +1,6 @@
 import { api } from './api';
 import type { SpringPage } from '@/types/api';
+import type { SettlePendingResult } from '@/types/settlement';
 import type {
   Suggestion,
   SuggestionParams,
@@ -31,6 +32,12 @@ export const suggestionService = {
   getSuggestionsByMatch(matchId: string) {
     return api
       .get<Suggestion[]>(`/api/suggestions/match/${matchId}`)
+      .then((r) => r.data);
+  },
+
+  settlePending() {
+    return api
+      .post<SettlePendingResult>('/api/suggestions/settle-pending')
       .then((r) => r.data);
   },
 };

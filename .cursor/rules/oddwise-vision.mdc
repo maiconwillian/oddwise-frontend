@@ -1,0 +1,34 @@
+---
+description: Visão de produto OddWise — sempre aplicar em conversas do frontend
+alwaysApply: true
+---
+
+# OddWise — Contexto de Produto (Frontend)
+
+## O que é
+
+**OddWise** UI: operação local de análise quantitativa de apostas. Mercado: **Over 2.5**. Backend em `sports-bet-analyzer` (`:8080`); este repo (`:5173`, proxy `/api`).
+
+## Estado atual (Sprint 9 — maio/2026)
+
+- UI Phase 1 + **1.5c** (`/value-bets`)
+- Liquidação automática Over 2.5 após sync + botão "Liquidar pendentes"
+- Backtest com aviso **lowSample** (mín. 30 apostas)
+- **Próximo:** Phase 1.8 fila de propostas — ver `PHASE_1_8_DRAFT.md`
+
+## Filosofia
+
+EV+ > winrate · backtest antes de escalar · narrow-and-deep.
+
+## Fluxo UI
+
+Admin sync → matches → odds → value bets EV+ → nova sugestão → WON/LOST/VOID (auto ou manual) → backtest → reports.
+
+## Documentação
+
+- `PROJECT_CHARTER.md` · `DECISIONS.md` · `OPERATIONS.md`
+- Backend: `SportsBetAnalysisPlatform.md`
+
+## Instrução ao agente
+
+Antes de sugerir features, considerar EV+, backtest e narrow-and-deep. `src/features/`, `src/services/`, TanStack Query. Não commitar `.env`.

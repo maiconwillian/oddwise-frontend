@@ -9,6 +9,7 @@ import { OddsPage } from '@/features/odds/OddsPage';
 import { BacktestingPage } from '@/features/backtesting/BacktestingPage';
 import { ReportsPage } from '@/features/reports/ReportsPage';
 import { AdminSyncPage } from '@/features/admin-sync/AdminSyncPage';
+import { ValueBetsPage } from '@/features/value-bets/ValueBetsPage';
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ export const router = createBrowserRouter([
       { path: 'matches/:id', element: <MatchDetailPage /> },
       { path: 'suggestions', element: <SuggestionsPage /> },
       { path: 'suggestions/new', element: <NewSuggestionPage /> },
+      { path: 'value-bets', element: <ValueBetsPage /> },
       { path: 'odds', element: <OddsPage /> },
       { path: 'backtesting', element: <BacktestingPage /> },
       { path: 'reports', element: <ReportsPage /> },

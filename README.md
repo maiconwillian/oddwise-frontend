@@ -2,6 +2,16 @@
 
 Front-end da plataforma **OddWise**, ferramenta profissional de análise quantitativa de apostas esportivas focada no mercado **Over 2.5 Goals**.
 
+## Documentação do projeto
+
+| Documento | Conteúdo |
+|-----------|----------|
+| [PROJECT_CHARTER.md](PROJECT_CHARTER.md) | Visão, roadmap, rotas, fluxos validados |
+| [DECISIONS.md](DECISIONS.md) | Decisões de produto relevantes à UI |
+| [OPERATIONS.md](OPERATIONS.md) | Rotina operacional semanal na UI |
+| [PHASE_1_8_DRAFT.md](PHASE_1_8_DRAFT.md) | Rascunho automação 3–5 picks/semana |
+| [Backend charter](https://github.com/maiconwillian/sports-bet-analyzer/blob/main/SportsBetAnalysisPlatform.md) | Charter canônico (repo backend) |
+
 ## Stack
 
 - React 18 + TypeScript
@@ -79,6 +89,7 @@ src/
 | `/matches/:id` | Detalhe da partida |
 | `/suggestions` | Sugestões |
 | `/suggestions/new` | Nova sugestão |
+| `/value-bets` | Oportunidades EV+ (Phase 1.5c) |
 | `/odds` | Odds e CLV |
 | `/backtesting` | Simulação histórica |
 | `/reports` | Relatórios de performance |
@@ -93,4 +104,6 @@ Todas as chamadas usam a base configurada em `VITE_API_BASE_URL`. O Vite proxy r
 - Champions League
 - Premier League
 - La Liga
-- Brasileirão
+- Bundesliga
+- Serie A (Itália)
+- Brasileirão (Serie A — Brazil)

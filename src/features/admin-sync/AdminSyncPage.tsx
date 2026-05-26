@@ -7,9 +7,10 @@ import { MetricCard } from '@/components/badges/MetricCard';
 import { ErrorState } from '@/components/states/ErrorState';
 import { LoadingSkeleton } from '@/components/states/LoadingSkeleton';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { DateInput } from '@/components/ui/date-input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { invalidateOperationalQueries } from '@/lib/queryInvalidation';
 import { adminService } from '@/services/adminService';
 import { formatDateTimeBR, toISODate } from '@/utils/dates';
 import { getApiErrorMessage } from '@/utils/formatters';
@@ -32,7 +33,7 @@ export function AdminSyncPage() {
     onSuccess: (data) => {
       setLastResult(data);
       toast.success(data.message ?? 'Sincronização concluída');
-      queryClient.invalidateQueries({ queryKey: ['sync-status'] });
+      invalidateOperationalQueries(queryClient);
     },
     onError: (error) => toast.error(getApiErrorMessage(error)),
   });
@@ -42,7 +43,7 @@ export function AdminSyncPage() {
     onSuccess: (data) => {
       setLastResult(data);
       toast.success(data.message ?? 'Sincronização concluída');
-      queryClient.invalidateQueries({ queryKey: ['sync-status'] });
+      invalidateOperationalQueries(queryClient);
     },
     onError: (error) => toast.error(getApiErrorMessage(error)),
   });
@@ -83,9 +84,11 @@ export function AdminSyncPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1">
-              <Label>Data</Label>
-              <Input
-                type="date"
+              <Label htmlFor="sync-date" className="cursor-pointer">
+                Data
+              </Label>
+              <DateInput
+                id="sync-date"
                 value={syncDate}
                 onChange={(e) => setSyncDate(e.target.value)}
               />
@@ -109,12 +112,24 @@ export function AdminSyncPage() {
           <CardContent className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="space-y-1">
-                <Label>De</Label>
-                <Input type="date" value={rangeFrom} onChange={(e) => setRangeFrom(e.target.value)} />
+                <Label htmlFor="sync-range-from" className="cursor-pointer">
+                  De
+                </Label>
+                <DateInput
+                  id="sync-range-from"
+                  value={rangeFrom}
+                  onChange={(e) => setRangeFrom(e.target.value)}
+                />
               </div>
               <div className="space-y-1">
-                <Label>Até</Label>
-                <Input type="date" value={rangeTo} onChange={(e) => setRangeTo(e.target.value)} />
+                <Label htmlFor="sync-range-to" className="cursor-pointer">
+                  Até
+                </Label>
+                <DateInput
+                  id="sync-range-to"
+                  value={rangeTo}
+                  onChange={(e) => setRangeTo(e.target.value)}
+                />
               </div>
             </div>
             <Button
@@ -136,10 +151,13 @@ export function AdminSyncPage() {
             {lastResult.message && (
               <p className="text-sm font-medium text-emerald-400">{lastResult.message}</p>
             )}
-            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4 lg:grid-cols-7">
               <div>
                 <p className="text-muted-foreground">Processadas</p>
-                <p className="font-bold">{lastResult.totalProcessed ?? 0}</p>
+                <p className="font-bold">
+                  {lastResult.totalProcessed ??
+                    (lastResult.created ?? 0) + (lastResult.updated ?? 0)}
+                </p>
               </div>
               <div>
                 <p className="text-muted-foreground">Criadas</p>
@@ -149,10 +167,22 @@ export function AdminSyncPage() {
                 <p className="text-muted-foreground">Atualizadas</p>
                 <p className="font-bold">{lastResult.updated ?? 0}</p>
               </div>
-              <div>
-                <p className="text-muted-foreground">Ignoradas</p>
-                <p className="font-bold">{lastResult.skipped ?? 0}</p>
-              </div>
+              {(lastResult.settled ?? 0) > 0 && (
+                <>
+                  <div>
+                    <p className="text-muted-foreground">Liquidadas</p>
+                    <p className="font-bold">{lastResult.settled}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Ganhas</p>
+                    <p className="font-bold text-emerald-400">{lastResult.won ?? 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground">Perdidas</p>
+                    <p className="font-bold text-rose-400">{lastResult.lost ?? 0}</p>
+                  </div>
+                </>
+              )}
             </div>
             {lastResult.errors && lastResult.errors.length > 0 && (
               <div className="rounded-md border border-rose-500/30 bg-rose-500/5 p-3">

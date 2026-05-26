@@ -1,0 +1,47 @@
+---
+description: Convenções React/TypeScript do OddWise frontend
+globs: "**/*.{tsx,ts}"
+alwaysApply: false
+---
+
+# OddWise — Frontend React
+
+## Estrutura
+
+- `src/features/` — páginas por domínio (matches, suggestions, odds, etc.)
+- `src/services/` — chamadas HTTP (Axios); base em `api.ts`
+- `src/types/` — tipos alinhados aos DTOs do backend
+- `src/utils/` — formatters, dates, matches, odds, numbers
+- `src/components/` — UI reutilizável (layout, badges, charts, states)
+
+## Padrões
+
+- **Server state:** TanStack Query (`useQuery`, `useMutation`) — não fetch em `useEffect`
+- **Forms:** React Hook Form + Zod schemas
+- **Tabelas:** TanStack Table + `DataTable` component
+- **Toasts:** Sonner
+- **Tema:** Zustand (`themeStore`)
+
+## API
+
+- Dev: proxy Vite `/api` → `localhost:8080`
+- Tipos em `types/api.ts`, `types/match.ts`, `types/suggestion.ts`, etc.
+- Erros: `getApiErrorMessage` em `utils/formatters.ts`
+
+## Domínio crítico
+
+- Status ao vivo: `IN_PLAY_MATCH_STATUSES` em `utils/matches.ts`
+- Resultado sugestão: enviar `actualResult`, não `status`
+- Odds: usar endpoints corretos (`getOddsByMatch`, não confundir com `/latest` como array)
+- Datas: parser `capturedAt` em `utils/dates.ts`
+- Liga: `LeagueBadge` com `leagueCountry`
+
+## UI
+
+- Tailwind + componentes em `components/ui/`
+- Badges: `LeagueBadge`, `StatusBadge`, `RoiBadge`
+- Estados: `LoadingSkeleton`, `ErrorState`, `EmptyState`
+
+## Referência
+
+`PROJECT_CHARTER.md`, `OPERATIONS.md`, backend DTOs para contratos API.

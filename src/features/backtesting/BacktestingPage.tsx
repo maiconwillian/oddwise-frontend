@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { useMutation } from '@tanstack/react-query';
 import { type ColumnDef } from '@tanstack/react-table';
 import { AlertTriangle, FlaskConical } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { MetricCard } from '@/components/badges/MetricCard';
@@ -82,6 +83,9 @@ export function BacktestingPage() {
     resolver: zodResolver(schema),
     defaultValues: {
       league: 'BRASILEIRAO',
+      strategyVersion: 'OVER_25_QUANT',
+      stake: 100,
+      minimumConfidence: 65,
       simulationMode: 'FIXED_STAKE',
     },
   });
@@ -165,7 +169,7 @@ export function BacktestingPage() {
             </div>
             <div className="space-y-1">
               <Label htmlFor="strategyVersion">Versão da estratégia *</Label>
-              <Input id="strategyVersion" placeholder="OVER25_V1" {...register('strategyVersion')} />
+              <Input id="strategyVersion" placeholder="OVER_25_QUANT" {...register('strategyVersion')} />
               {errors.strategyVersion && (
                 <p className="text-xs text-rose-400">{errors.strategyVersion.message}</p>
               )}
@@ -190,7 +194,27 @@ export function BacktestingPage() {
 
       {result && (
         <>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+          {result.lowSample && (
+            <Card className="border-amber-500/40 bg-amber-500/10">
+              <CardContent className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-start gap-3">
+                  <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-400" />
+                  <p className="text-sm text-muted-foreground">
+                    Amostra insuficiente ({result.betsPlaced} apostas, mínimo{' '}
+                    {result.minSampleBets ?? 30}) — sincronize mais histórico antes de confiar no ROI.
+                  </p>
+                </div>
+                <Link to="/admin/sync">
+                  <Button variant="outline" size="sm">
+                    Ir para Sync
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
+          )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
+            <MetricCard title="Partidas analisadas" value={String(result.matchesAnalyzed)} />
+            <MetricCard title="Apostas simuladas" value={String(result.betsPlaced)} />
             <MetricCard
               title="ROI"
               value={formatPercent(result.roi)}

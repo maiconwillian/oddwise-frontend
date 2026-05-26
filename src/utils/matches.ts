@@ -1,4 +1,4 @@
-import { LEAGUES, leagueFromApiNameAndCountry, type League } from '@/types/api';
+import { leagueFromApiNameAndCountry, type League } from '@/types/api';
 import type { Match } from '@/types/match';
 
 /** Partidas em andamento (API Football usa LIVE, 1H/ONE_H, HT, 2H/TWO_H, etc.). */
