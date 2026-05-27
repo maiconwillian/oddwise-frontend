@@ -2,6 +2,8 @@ import { Badge } from '@/components/ui/label';
 import { formatStatus } from '@/utils/formatters';
 
 const statusVariant: Record<string, 'default' | 'success' | 'danger' | 'warning' | 'secondary'> = {
+  PROPOSED: 'default',
+  REJECTED: 'secondary',
   PENDING: 'warning',
   WON: 'success',
   LOST: 'danger',

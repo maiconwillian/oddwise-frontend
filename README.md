@@ -89,7 +89,9 @@ src/
 | `/matches/:id` | Detalhe da partida |
 | `/suggestions` | Sugestões |
 | `/suggestions/new` | Nova sugestão |
+| `/suggestions/proposed` | Propostas da semana |
 | `/value-bets` | Oportunidades EV+ + análise da rodada (Sprint 11) |
+| `/picks` | Picks da rodada — melhor Over 2.5 do dia (Sprint 12) |
 | `/odds` | Odds e CLV |
 | `/backtesting` | Simulação histórica |
 | `/reports` | Relatórios de performance |

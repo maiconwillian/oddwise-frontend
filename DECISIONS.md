@@ -23,9 +23,11 @@ Espelho das decisões relevantes à UI. ADRs completas no backend.
 | ADR-013 | Roadmap agente multi-mercado | 1.75→1.77 antes de 1.8; MCP/n8n em 1.85/2.0; ver [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md) |
 | ADR-014 | Enrich endpoint separado (1.75) | Admin **Enriquecer análise**; `app.enrich.auto-after-sync=false`; ver [SPRINT_10.md](SPRINT_10.md) |
 | ADR-015 | EV+ page = oportunidades + ranking do dia (Sprint 11) | `/value-bets` duas tabelas; `GET /api/analysis/match-insights`; `/matches` com colunas batch; ver [SPRINT_11.md](SPRINT_11.md) |
+| ADR-016 | Pick engine v1 = Over 2.5 only (Sprint 12 / 1.77) | `round-picks` + `bestPick`; pick pode ter EV+ sem passar 65% conf.; ver [SPRINT_12.md](SPRINT_12.md) |
+| ADR-017 | Propostas semanais PROPOSED (Sprint 13 / 1.8) | Até 5/semana; accept→PENDING; reject→REJECTED; settlement ignora PROPOSED; ver [SPRINT_13.md](SPRINT_13.md) |
 
 ---
 
 ## Ritual
 
-Após mudanças de produto ou contrato API, atualizar esta tabela e o PROJECT_CHARTER.
+Após mudanças de produto ou contrato API, atualizar esta tabela, [ROADMAP_STATUS.md](ROADMAP_STATUS.md) e o PROJECT_CHARTER.

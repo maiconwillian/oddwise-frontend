@@ -1,4 +1,4 @@
-export type SuggestionStatus = 'PENDING' | 'WON' | 'LOST' | 'VOID';
+export type SuggestionStatus = 'PROPOSED' | 'REJECTED' | 'PENDING' | 'WON' | 'LOST' | 'VOID';
 
 export type Suggestion = {
   id: string;
@@ -14,6 +14,7 @@ export type Suggestion = {
   stake: number;
   status: SuggestionStatus;
   roi: number | null;
+  proposalReason?: string | null;
 };
 
 export type SuggestionParams = {

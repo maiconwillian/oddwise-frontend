@@ -1,11 +1,11 @@
 # OddWise — Project Charter (Frontend)
 
 **Última Atualização:** 2026-05-26  
-**Status:** Sprint 11 ✅ · Phase 1.75 Match Intelligence · EV+ hub da rodada · Backtest lowSample  
+**Status:** Sprint 13 ✅ · Phase 1.8 Propostas semanais · Pick engine · EV+ hub  
 **Repo backend:** https://github.com/maiconwillian/sports-bet-analyzer  
 **Charter canônico (backend):** [SportsBetAnalysisPlatform.md](https://github.com/maiconwillian/sports-bet-analyzer/blob/main/SportsBetAnalysisPlatform.md)
 
-**Documentos locais:** [DECISIONS.md](DECISIONS.md) · [OPERATIONS.md](OPERATIONS.md) · [SPRINT_11.md](SPRINT_11.md) · [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md) · [PHASE_1_8_DRAFT.md](PHASE_1_8_DRAFT.md)
+**Documentos locais:** [ROADMAP_STATUS.md](ROADMAP_STATUS.md) · [DECISIONS.md](DECISIONS.md) · [OPERATIONS.md](OPERATIONS.md) · [SPRINT_13.md](SPRINT_13.md) · [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md)
 
 ---
 
@@ -19,9 +19,9 @@ Interface profissional do **OddWise** para operação diária de análise quanti
 
 Permitir que o operador execute o ciclo completo localmente:
 
-**sync → enrich análise → capturar odds → EV+ (oportunidades + radar da rodada) → registrar sugestão → fechar resultado (auto/manual) → backtest → relatório**
+**sync → enrich → odds → EV+ / picks → gerar propostas → aceitar → sugestão → resultado → backtest → relatório**
 
-Meta de produto (com backend): **3–5 sugestões/semana** com agente multi-mercado — roadmap [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md); fila 1.8 após 1.75 + 1.77.
+Meta de produto (com backend): **3–5 sugestões/semana** com revisão humana — fluxo **propostas semanais** ✅ (Sprint 13). Roadmap: [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
 
 ---
 
@@ -33,9 +33,11 @@ Meta de produto (com backend): **3–5 sugestões/semana** com agente multi-merc
 | Partidas | ✅ Filtros liga/status/ao vivo, badge `leagueCountry` |
 | Detalhe partida | ✅ Card **Análise** (forma, médias, posição), enrich, odds, nova sugestão |
 | Odds | ✅ Histórico e consulta |
-| **Oportunidades EV+** | ✅ `/value-bets` — oportunidades EV+ + **Análise da rodada** + banner stats (Sprint 11) |
+| **Oportunidades EV+** | ✅ `/value-bets` — oportunidades + análise da rodada (Sprint 11) |
+| **Picks da rodada** | ✅ `/picks` — pick #1 + ranking Over 2.5 (Sprint 12 / 1.77) |
 | Partidas (data) | ✅ Colunas confiança / stats / odds / sinal via `match-insights` |
 | Sugestões | ✅ Listagem, WON/LOST/VOID, **Liquidar pendentes** |
+| **Propostas** | ✅ `/suggestions/proposed` — gerar semana, aceitar/rejeitar (Sprint 13 / 1.8) |
 | Nova sugestão | ✅ Liga → partida → odd (combobox) |
 | Backtesting | ✅ Formulário + **aviso amostra baixa** (`lowSample`) |
 | Relatórios | ✅ ROI diário/mensal |
@@ -58,7 +60,9 @@ Meta de produto (com backend): **3–5 sugestões/semana** com agente multi-merc
 | `/matches/:id` | Detalhe |
 | `/suggestions` | Sugestões |
 | `/suggestions/new?matchId=` | Nova sugestão |
+| `/suggestions/proposed` | Propostas da semana |
 | `/value-bets` | Oportunidades EV+ |
+| `/picks` | Picks da rodada |
 | `/odds` | Odds |
 | `/backtesting` | Backtesting |
 | `/reports` | Relatórios |
@@ -75,21 +79,19 @@ Meta de produto (com backend): **3–5 sugestões/semana** com agente multi-merc
 - Phase 1.7 — flag `lowSample` no backtest + guia operacional
 - Sync invalida cache de partidas/sugestões/relatórios
 
-### Concluído (Sprint 10–11)
+### Concluído (Sprint 10–13)
 
-- **1.75** — Match Intelligence (enrich, card Análise, EV+ meta)
-- **Sprint 11** — `GET /api/analysis/match-insights`, radar da rodada, EV com odd real no insight
+- **1.75** — Match Intelligence
+- **Sprint 11–12** — EV+ hub, `match-insights`, `/picks`
+- **1.8 / Sprint 13** — propostas semanais `PROPOSED` → accept/reject
 
-### Próximo (roadmap agente — ver [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md))
+### Próximo (ver [ROADMAP_STATUS.md](ROADMAP_STATUS.md))
 
-1. **1.77** — Pick engine (confiança calibrada, picks do dia)
-2. **1.76** — Multi-market engine (Over 2.5, BTTS, 1X2 + backtest) — após validação narrow-and-deep
-3. **1.77** — Pick of the day (`bestPick` por jogo/rodada)
-4. **1.8** — Propostas semanais accept/reject — [PHASE_1_8_DRAFT.md](PHASE_1_8_DRAFT.md)
-5. **1.85** — Analyst Agent + MCP
-6. **2.0** — n8n orquestração semanal
-
-**1.9** — Sync só ligas suportadas + scheduler (paralelo quando fizer sentido)
+1. **1.76** — Multi-market (BTTS, 1X2 + backtest por mercado)
+2. **Calibração** (opcional) — limiares EV+ / fórmula Over 2.5 com histórico local
+3. **1.85** — Analyst Agent + MCP
+4. **2.0** — n8n orquestração semanal
+5. **1.9** — Sync / scheduler (paralelo quando fizer sentido)
 
 ### Non-goals (Phase 1)
 

@@ -9,12 +9,12 @@ alwaysApply: true
 
 **OddWise** UI: operação local de análise quantitativa de apostas. Mercado: **Over 2.5**. Backend em `sports-bet-analyzer` (`:8080`); este repo (`:5173`, proxy `/api`).
 
-## Estado atual (Sprint 11 — maio/2026)
+## Estado atual (Sprint 13 — maio/2026)
 
-- UI Phase 1 + **1.75** (card Análise, enrich admin)
-- **EV+ hub:** `/value-bets` — oportunidades + **Análise da rodada** (`match-insights`); `/matches` com sinal por data
-- Liquidação automática Over 2.5 após sync
-- **Próximo:** 1.77 picks → 1.8 propostas → 1.85 agente MCP — `PRODUCT_VISION_AGENT.md`
+- UI Phase 1 + EV+ + picks + **propostas semanais** (`/suggestions/proposed`)
+- Aceitar proposta → sugestão `PENDING`; rejeitar → `REJECTED`
+- Liquidação automática só em `PENDING`
+- **Próximo:** 1.76 multi-mercado → 1.85 agente MCP
 
 ## Filosofia
 
@@ -22,10 +22,11 @@ EV+ > winrate · backtest antes de escalar · narrow-and-deep.
 
 ## Fluxo UI
 
-Admin sync → **enrich** → odds → **EV+ (oportunidades + radar rodada)** → nova sugestão → WON/LOST/VOID → backtest → reports.
+Admin sync → enrich → odds → EV+ / picks → **propostas** → aceitar → sugestão → WON/LOST/VOID → reports.
 
 ## Documentação
 
+- **`ROADMAP_STATUS.md`** — o que está ✅ vs ⬜ (fonte única)
 - `PROJECT_CHARTER.md` · `PRODUCT_VISION_AGENT.md` · `DECISIONS.md` · `OPERATIONS.md`
 - Backend: `SportsBetAnalysisPlatform.md`
 

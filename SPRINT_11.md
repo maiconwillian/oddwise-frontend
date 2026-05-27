@@ -1,5 +1,7 @@
 # Sprint 11 — EV+ utilizável + análise na rodada
 
+> **Histórico.** Status atual: [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
+
 **Data:** 2026-05-26  
 **Repos:** `oddwise-frontend` · `sports-bet-analyzer` (backend)
 

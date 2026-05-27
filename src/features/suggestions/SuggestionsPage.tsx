@@ -184,6 +184,9 @@ export function SuggestionsPage() {
               <CheckCircle2 className="mr-2 h-4 w-4" />
               Liquidar pendentes
             </Button>
+            <Link to="/suggestions/proposed">
+              <Button variant="outline">Propostas da semana</Button>
+            </Link>
             <Link to="/suggestions/new">
               <Button>
                 <Plus className="mr-2 h-4 w-4" />

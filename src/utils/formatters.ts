@@ -28,6 +28,8 @@ export function formatMarket(market: string | null | undefined): string {
 export function formatStatus(status: string | null | undefined): string {
   if (!status) return '—';
   const map: Record<string, string> = {
+    PROPOSED: 'Proposta',
+    REJECTED: 'Rejeitada',
     PENDING: 'Pendente',
     WON: 'Ganho',
     LOST: 'Perdido',

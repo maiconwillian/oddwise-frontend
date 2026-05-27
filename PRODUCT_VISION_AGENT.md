@@ -1,6 +1,7 @@
 # OddWise — Visão: Agente de recomendação multi-mercado
 
-**Status:** Phase 1.75 ✅ · Sprint 11 (EV+ hub + radar rodada) · próximo 1.77  
+**Status:** Phase 1.8 ✅ (Sprint 13) · próximo 1.76 ou calibração  
+**Roadmap:** [ROADMAP_STATUS.md](ROADMAP_STATUS.md)  
 **Charter canônico (backend):** [../backend/PRODUCT_VISION_AGENT.md](../backend/PRODUCT_VISION_AGENT.md)
 
 ---
@@ -13,7 +14,7 @@ O **alvo do produto** é um **agente** (LLM + MCP + backend) que, por rodada:
 2. Indica **em qual mercado** apostar (Over 2.5, BTTS, vitória, empate, etc.) — não só gols;
 3. Entrega **parecer** estilo preparador, com **você aceitando** antes de registrar a aposta.
 
-**Hoje:** Over 2.5 operacional; após **sync + enrich + odds**, **EV+** = filtro de oportunidades (limiares) **+ radar da rodada** (`match-insights`); card Análise no detalhe; **Nova sugestão** manual ou pré-preenchida do motor.
+**Hoje:** Over 2.5 operacional; EV+ + picks + **propostas semanais** (gerar → aceitar/rejeitar); sugestões `PENDING` após aceite.
 
 ---
 
@@ -22,14 +23,14 @@ O **alvo do produto** é um **agente** (LLM + MCP + backend) que, por rodada:
 | Fase | Entrega |
 |------|---------|
 | ~~**1.75**~~ ✅ | Match Intelligence — enrich, card Análise |
-| ~~**Sprint 11**~~ ✅ | EV+ hub — oportunidades + análise da rodada; colunas em `/matches` |
-| **1.76** | Modelos Over 2.5 + BTTS + 1X2 (backtest por mercado) |
-| **1.77** | Pick of the day — melhor mercado por jogo |
-| **1.8** | Propostas 3–5/semana — [PHASE_1_8_DRAFT.md](PHASE_1_8_DRAFT.md) |
+| ~~**Sprint 11**~~ ✅ | EV+ hub — oportunidades + análise da rodada |
+| ~~**1.77**~~ ✅ | Pick engine Over 2.5 — `/picks` |
+| ~~**1.8**~~ ✅ | Propostas semanais — `/suggestions/proposed` |
+| **1.76** | Multi-market BTTS / 1X2 + backtest |
 | **1.85** | Analyst Agent + MCP |
 | **2.0** | n8n semanal |
 
-**1.8 só depois de 1.75 + 1.77.**
+Tabela completa e ordem de entrega: [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
 
 ---
 
@@ -38,10 +39,10 @@ O **alvo do produto** é um **agente** (LLM + MCP + backend) que, por rodada:
 | Rota | Função |
 |------|--------|
 | `/matches/:id` | Painel inteligência (forma, médias, tabela) |
-| `/picks` ou dashboard | Melhor pick da rodada |
-| `/suggestions/proposed` | Fila accept/reject (1.8) |
+| `/picks` | ✅ Melhor pick da rodada + ranking |
+| `/suggestions/proposed` | ✅ Fila accept/reject |
 
-`/matches/:id` — card **Análise** + **Atualizar análise**. `/value-bets` — oportunidades EV+ + tabela **Análise da rodada**; banner só se stats incompletas.
+`/matches/:id` — card **Análise**. `/value-bets` — EV+ + radar. `/picks` — pick #1 e ranking (independente do limiar EV+ automático).
 
 ---
 

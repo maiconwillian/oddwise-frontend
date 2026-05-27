@@ -1,5 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { AlertTriangle, DollarSign, Percent, Target, Trophy, Users } from 'lucide-react';
+import { pickService } from '@/services/pickService';
+import { proposalService } from '@/services/proposalService';
+import { startOfWeek, endOfWeek } from 'date-fns';
+import { formatMarket } from '@/utils/formatters';
 import { Link } from 'react-router-dom';
 import { type ColumnDef } from '@tanstack/react-table';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -17,7 +21,7 @@ import { suggestionService } from '@/services/suggestionService';
 import { adminService } from '@/services/adminService';
 import type { Suggestion } from '@/types/suggestion';
 import { statusCount, totalSuggestions } from '@/types/reports';
-import { defaultDateRange, formatDateTimeBR } from '@/utils/dates';
+import { defaultDateRange, formatDateTimeBR, toISODate } from '@/utils/dates';
 import { formatCurrency, formatPercent, valueColorClass } from '@/utils/numbers';
 import { formatOdd } from '@/utils/numbers';
 
@@ -81,6 +85,20 @@ export function DashboardPage() {
   const syncQuery = useQuery({
     queryKey: ['sync-status'],
     queryFn: () => adminService.getSyncStatus(),
+  });
+
+  const today = toISODate(new Date());
+  const weekFrom = toISODate(startOfWeek(new Date(), { weekStartsOn: 1 }));
+  const weekTo = toISODate(endOfWeek(new Date(), { weekStartsOn: 1 }));
+
+  const proposedQuery = useQuery({
+    queryKey: ['proposed-suggestions', weekFrom, weekTo],
+    queryFn: () => proposalService.getProposed({ from: weekFrom, to: weekTo }),
+  });
+
+  const roundPicksQuery = useQuery({
+    queryKey: ['round-picks', today, ''],
+    queryFn: () => pickService.getRoundPicks({ date: today }),
   });
 
   const isLoading = statusQuery.isLoading || roiQuery.isLoading;
@@ -150,6 +168,50 @@ export function DashboardPage() {
             icon={AlertTriangle}
           />
         </div>
+      )}
+
+      {proposedQuery.data && (
+        <Card className="border-border bg-card">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
+            <div className="text-sm">
+              <p className="font-medium">Propostas esta semana</p>
+              <p className="text-2xl font-bold text-primary">
+                {proposedQuery.data.length}/5
+              </p>
+              <p className="text-xs text-muted-foreground">Aguardando sua revisão</p>
+            </div>
+            <Link
+              to="/suggestions/proposed"
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Revisar propostas →
+            </Link>
+          </CardContent>
+        </Card>
+      )}
+
+      {roundPicksQuery.data?.topPick?.bestPick && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardContent className="flex flex-wrap items-center justify-between gap-3 p-4">
+            <div className="text-sm">
+              <p className="font-medium text-primary">Melhor pick hoje</p>
+              <p className="mt-1 text-foreground">
+                {roundPicksQuery.data.topPick.homeTeamName} vs{' '}
+                {roundPicksQuery.data.topPick.awayTeamName}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {formatMarket(roundPicksQuery.data.topPick.bestPick.market)} ·{' '}
+                {roundPicksQuery.data.topPick.recommendations[0]?.confidence.toFixed(0)}% conf.
+              </p>
+            </div>
+            <Link
+              to={`/picks?date=${today}`}
+              className="text-sm font-medium text-primary hover:underline"
+            >
+              Ver picks da rodada →
+            </Link>
+          </CardContent>
+        </Card>
       )}
 
       {sync && (

@@ -7,9 +7,11 @@ import {
   Moon,
   RefreshCw,
   Sparkles,
+  ClipboardList,
   Sun,
   Target,
   TrendingUp,
+  Trophy,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -22,7 +24,9 @@ const navItems = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/matches', label: 'Partidas', icon: Calendar },
   { to: '/suggestions', label: 'Sugestões', icon: Target },
+  { to: '/suggestions/proposed', label: 'Propostas', icon: ClipboardList },
   { to: '/value-bets', label: 'Oportunidades EV+', icon: Sparkles },
+  { to: '/picks', label: 'Picks da rodada', icon: Trophy },
   { to: '/odds', label: 'Odds', icon: TrendingUp },
   { to: '/backtesting', label: 'Backtesting', icon: FlaskConical },
   { to: '/reports', label: 'Relatórios', icon: BarChart3 },

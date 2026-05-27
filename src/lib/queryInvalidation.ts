@@ -7,6 +7,7 @@ export function invalidateOperationalQueries(queryClient: QueryClient) {
     'matches',
     'match',
     'suggestions',
+    'proposed-suggestions',
     'suggestions-match',
     'status-summary',
     'roi',
@@ -16,6 +17,8 @@ export function invalidateOperationalQueries(queryClient: QueryClient) {
     'reports-monthly',
     'value-bets',
     'match-insights',
+    'round-picks',
+    'match-picks',
     'match-analysis',
     'value-bet-match',
   ] as const;

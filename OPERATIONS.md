@@ -1,6 +1,6 @@
 # OddWise — Operações (UI)
 
-Rotina do operador usando o frontend local.
+Rotina do operador usando o frontend local. **Roadmap:** [ROADMAP_STATUS.md](ROADMAP_STATUS.md).
 
 **Pré-requisitos:** Backend `:8080` rodando · `npm run dev` → `:5173`
 
@@ -50,7 +50,7 @@ Abrir http://localhost:5173
 
 ### 4. Oportunidades EV+ (`/value-bets`) — hub da rodada
 
-Rotina: **enrich → odds → EV+** (duas tabelas na mesma página).
+Rotina: **enrich → odds → EV+ → picks** (duas tabelas EV+ + link para picks).
 
 1. **Oportunidades EV+** — só jogos que passam confiança ≥ 65% e EV ≥ 5% com odd Over 2.5 capturada.
 2. **Análise da rodada** — todos os jogos elegíveis do dia, ordenados por confiança (inclui “Quase” ~55–64%).
@@ -60,6 +60,25 @@ Rotina: **enrich → odds → EV+** (duas tabelas na mesma página).
 - Stats OK e oportunidades vazias: mensagem explícita com limiares — **não é bug**; use a tabela de análise abaixo.
 - **Criar sugestão** / **Ver partida** nas linhas do radar.
 - Ver [SPRINT_11.md](SPRINT_11.md) para teste `2026-05-30` (PSG x Arsenal ~61%, sem linha EV+).
+
+### 4b. Picks da rodada (`/picks`) — Phase 1.77
+
+- Mesmos filtros data/liga.
+- **Pick da rodada** (#1): melhor jogo com EV positivo (pode ser “Quase”, ex. 61% conf.).
+- Ranking completo; badge “Também é oportunidade EV+” quando passa 65%/5%.
+- Dashboard: widget “Melhor pick hoje”.
+- API: `GET /api/analysis/round-picks` · `GET /api/analysis/match/{id}/picks`
+- Ver [SPRINT_12.md](SPRINT_12.md).
+
+### 4c. Propostas da semana (`/suggestions/proposed`) — Phase 1.8
+
+1. Definir intervalo (seg–dom) ou usar padrão da tela.
+2. **Gerar propostas da semana** — até 5 rascunhos a partir de picks com EV+ (pode incluir ~61% conf.).
+3. **Aceitar** → vira sugestão `PENDING` em `/suggestions`.
+4. **Rejeitar** → descartada; não liquida automaticamente.
+5. Dashboard: widget N/5.
+
+Ver [SPRINT_13.md](SPRINT_13.md).
 
 ### 5. Nova sugestão (`/suggestions/new`)
 

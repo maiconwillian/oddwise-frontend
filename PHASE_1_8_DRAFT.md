@@ -1,6 +1,6 @@
 # Phase 1.8 — Automação de sugestões (rascunho)
 
-**Status:** planejado · Sprint 10+  
+**Status:** implementado · Sprint 13 — [SPRINT_13.md](SPRINT_13.md)  
 **Backend:** [../backend/PHASE_1_8_DRAFT.md](../backend/PHASE_1_8_DRAFT.md)  
 **Visão agente:** [PRODUCT_VISION_AGENT.md](PRODUCT_VISION_AGENT.md)
 
@@ -8,7 +8,7 @@
 
 - Phase 1.5c ✅ · backtest 1.7 com amostra OK onde for operar
 - **Phase 1.75** (stats reais) ✅ — Sprint 10; ver [SPRINT_10.md](SPRINT_10.md)
-- **Phase 1.77** (pick ranking) ⬜
+- **Phase 1.77** (pick ranking) ✅ — [SPRINT_12.md](SPRINT_12.md)
 
 **Não implementar fila de propostas antes de 1.75 + 1.77.**
 

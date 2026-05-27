@@ -238,7 +238,13 @@ export function ValueBetsPage() {
             passam confiança e EV mínimos com odd Over 2.5 capturada.{' '}
             <strong className="text-foreground">Análise da rodada</strong> mostra todos os jogos
             elegíveis do dia (mesmo abaixo do limiar) para decisão rápida sem abrir cada partida.
-            Mercado: {formatMarket('OVER_2_5')}.
+            Mercado: {formatMarket('OVER_2_5')}. Para o{' '}
+            <strong className="text-foreground">melhor pick do dia</strong> (mesmo abaixo do limiar
+            EV+), use{' '}
+            <Link to={`/picks?date=${date}`} className="text-primary hover:underline">
+              Picks da rodada
+            </Link>
+            .
           </p>
         </CardContent>
       </Card>
@@ -266,6 +272,12 @@ export function ValueBetsPage() {
             ))}
           </Select>
         </div>
+        <Link
+          to={`/picks?date=${date}${league ? `&league=${league}` : ''}`}
+          className="text-sm text-primary hover:underline"
+        >
+          Ver picks da rodada →
+        </Link>
       </div>
 
       {scanQuery.data?.statsIncomplete && scanQuery.data.hint && (
